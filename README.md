@@ -36,10 +36,10 @@ This is my personal portfolio website, designed to showcase my skills, projects,
 5. Open your browser and navigate to `http://localhost:3000`.
 
 ## Usage
-Visit the live website [here](https://yourusername.github.io/portfolio) to explore my portfolio and get in touch.
+Visit the live website [here](https://prafullapurohit.netlify.app/) to explore my portfolio and get in touch.
 
 ## Contributing
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/yourusername/portfolio/issues).
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/prafulla2121/portfolio/issues).
 
 ## License
 This project is licensed under the MIT License. See the `LICENSE` file for details.
