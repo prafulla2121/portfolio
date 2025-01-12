@@ -48,4 +48,4 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 Thank you for visiting my portfolio! 😊
 
-Feel free to reach out via the contact form on the website or connect with me on [LinkedIn](https://linkedin.com/in/yourprofile) or [Twitter](https://twitter.com/yourhandle).
+Feel free to reach out via the contact form on the website or connect with me on [LinkedIn](https://www.linkedin.com/in/prafulla-purohit-79aa5623b/) 
