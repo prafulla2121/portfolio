@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 265 48" width="265" height="48">
+    <style>
+        .logo-text {
+            font-family: 'Times New Roman', serif; /* Replace with the desired font */
+            font-size: 58px;
+            fill: #FEF5E4; /* Adjust to match the background */
+        
+        }
+    </style>
+    <text x="0" y="42" class="logo-text">Prafulla.</text>
+</svg>
