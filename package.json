@@ -7,7 +7,7 @@
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:client": "vite",
     "dev:server": "tsx watch server/src/index.ts",
-    "build": "npm run build:client && npm run build:server",
+    "build": "cd client && npm install && npm run build",
     "build:client": "vite build",
     "build:server": "tsc -p server/tsconfig.json",
     "preview": "vite preview",
