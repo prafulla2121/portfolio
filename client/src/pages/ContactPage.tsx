@@ -20,12 +20,12 @@ export function ContactPage() {
       <section className="s-pagecontent pagecontent">
         <div className="row pageintro">
           <div className="column xl-6 lg-12">
-            <h2 className="text-display-title">Let&apos;s Create Something Extraordinary Together.</h2>
+            <h2 className="text-display-title">Have an AI integration to build? Let&apos;s talk.</h2>
           </div>
           <div className="column xl-6 lg-12 u-flexitem-x-right">
             <p className="lead" style={{ textAlign: "justify" }}>
-              Every great story begins with a spark of connection. Reach out, and let&apos;s transform ideas into reality,
-              crafting experiences that resonate and solutions that inspire.
+              I help teams connect AI agents to their real systems — MCP servers, RAG over company documents, and agent
+              workflows. Email is the fastest way to reach me.
             </p>
           </div>
         </div>
@@ -71,13 +71,6 @@ export function ContactPage() {
                   <a href={`mailto:${data.profile.email}`}>{data.profile.email}</a>
                 </div>
 
-                <div className="contact-block">
-                  <h6>Phone</h6>
-                  <ul className="contact-list">
-                    <li><a href={`tel:${data.profile.phone.replace(/\s+/g, "")}`}>{data.profile.phone}</a></li>
-                    <li><a href={`tel:${data.profile.altPhone.replace(/\s+/g, "")}`}>{data.profile.altPhone}</a></li>
-                  </ul>
-                </div>
               </div>
             </div>
           </div>

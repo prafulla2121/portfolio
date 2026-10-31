@@ -1,17 +1,10 @@
-import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { CtaSection } from "../components/CtaSection";
 import type { PortfolioData } from "../types/portfolio";
 
-const PAGE_SIZE = 9;
-
 export function ProjectsPage() {
   const data = useOutletContext<PortfolioData>();
-  const [page, setPage] = useState(1);
-
-  const totalPages = Math.max(1, Math.ceil(data.projects.length / PAGE_SIZE));
-  const start = (page - 1) * PAGE_SIZE;
-  const projects = data.projects.slice(start, start + PAGE_SIZE);
+  const projects = data.projects;
 
   return (
     <section id="content" className="s-content">
@@ -20,7 +13,7 @@ export function ProjectsPage() {
           <div className="column xl-12">
             <h1 className="page-title">
               <span className="page-title__small-type text-pretitle">My Projects</span>
-              Recent Projects
+              Selected Work
             </h1>
           </div>
         </div>
@@ -45,12 +38,15 @@ export function ProjectsPage() {
                     </h3>
                   </div>
                   <div className="blog-card__text">
-                    <p>
-                      {project.description}{" "}
-                      <a href={project.liveUrl ?? project.repoUrl} target="_blank" rel="noreferrer">
-                        Explore Project
-                      </a>
-                    </p>
+                    <p>{project.description}</p>
+                    <ul className="tech-tags" aria-label="Tech stack">
+                      {project.tech.map((tech) => (
+                        <li key={tech}>{tech}</li>
+                      ))}
+                    </ul>
+                    <a href={project.liveUrl ?? project.repoUrl} target="_blank" rel="noreferrer">
+                      {project.liveUrl ? "Live demo" : "View code on GitHub"} →
+                    </a>
                   </div>
                 </div>
               ))}
@@ -58,35 +54,6 @@ export function ProjectsPage() {
           </div>
         </div>
 
-        <div className="row navigation pagination">
-          <div className="column xl-12">
-            <nav className="pgn">
-              <ul>
-                <li>
-                  <button className="pgn__prev" onClick={() => setPage((current) => Math.max(1, current - 1))} disabled={page === 1}>
-                    Prev
-                  </button>
-                </li>
-                {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
-                  <li key={pageNumber}>
-                    {pageNumber === page ? (
-                      <span className="pgn__num current">{pageNumber}</span>
-                    ) : (
-                      <button className="pgn__num" onClick={() => setPage(pageNumber)}>
-                        {pageNumber}
-                      </button>
-                    )}
-                  </li>
-                ))}
-                <li>
-                  <button className="pgn__next" onClick={() => setPage((current) => Math.min(totalPages, current + 1))} disabled={page === totalPages}>
-                    Next
-                  </button>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
       </section>
 
       <CtaSection showLead={false} />

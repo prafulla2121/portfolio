@@ -14,13 +14,11 @@ export function HomePage() {
             <div className="s-intro__content-text">
               <div className="s-intro__content-pretitle text-pretitle">Hello, I&apos;m Prafulla</div>
               <h1 className="s-intro__content-title">
-                Full Stack Developer
+                Forward Deployed /{" "}
                 <br />
-                Crafting semless
-                <br />
-                web expriences
-                <br />
+                Applied AI Engineer
               </h1>
+              <p className="s-intro__content-lead">{data.profile.tagline}</p>
             </div>
 
             <div className="s-intro__content-media">
@@ -54,12 +52,12 @@ export function HomePage() {
 
             <div className="section-header grid-section-split__header">
               <div className="text-pretitle">About</div>
-              <h2 className="text-display-title">Empowering Ideas, Building Connections, and Embracing Growth</h2>
+              <h2 className="text-display-title">AI agents that work with real business systems</h2>
             </div>
 
             <div className="s-about__content-main grid-section-split__primary">
               {data.profile.about.map((paragraph) => (
-                <p key={paragraph} className="attention-getter" style={{ textAlign: "justify" }}>
+                <p key={paragraph} className="attention-getter">
                   {paragraph}
                 </p>
               ))}
@@ -82,26 +80,22 @@ export function HomePage() {
               <div className="text-pretitle">Expertise</div>
               <h2 className="text-display-title">
                 My key areas of expertise.
-                <br />
-                <br />
-                <img src="/images/Screenshot 2024-12-31 121236.png" srcSet="/images/Screenshot 2024-12-31 121236.png 1x, /images/Screenshot 2024-12-31 121236.png 2x" alt="" />
-
-                <div className="s-expertise__content-btn grid-section-split__bottom">
-                  <Link to="/skills" className="btn btn--stroke u-fullwidth">
-                    View All Services
-                  </Link>
-                </div>
               </h2>
+              <div className="s-expertise__content-btn grid-section-split__bottom">
+                <Link to="/skills" className="btn btn--stroke u-fullwidth">
+                  View All Skills
+                </Link>
+              </div>
             </div>
 
             <div className="s-expertise__content-main grid-section-split__primary">
               <div className="grid-list-items list-items show-ctr">
-                {data.skillGroups.slice(0, 5).map((group) => (
+                {data.skillGroups.slice(0, 4).map((group) => (
                   <div className="grid-list-items__item list-items__item" key={group.title}>
                     <div className="grid-list-items__title list-items__item-header">
                       <h3 className="list-items__item-title">{group.title}</h3>
                     </div>
-                    <div className="grid-list-items__text list-items__item-text" style={{ textAlign: "justify" }}>
+                    <div className="grid-list-items__text list-items__item-text">
                       <p>{group.items.join(", ")}.</p>
                     </div>
                   </div>

@@ -33,8 +33,6 @@ export interface PortfolioData {
     tagline: string;
     location: string;
     email: string;
-    phone: string;
-    altPhone: string;
     github: string;
     linkedin: string;
     twitter: string;
@@ -53,6 +51,5 @@ export interface PortfolioData {
   };
   skillGroups: SkillGroup[];
   projects: ProjectItem[];
-  highlights: string[];
   values: ValueItem[];
 }
