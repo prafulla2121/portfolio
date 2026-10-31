@@ -16,14 +16,14 @@ export const portfolioData: PortfolioData = {
     summary:
       "Applied AI engineer and final-year B.Tech IT student. I build MCP servers, RAG pipelines and AI agents that work with real accounting and e-commerce data.",
     about: [
-      "I work as an AI/ML Engineer Intern at Satva Solutions in Ahmedabad. My main job is to connect AI agents to business systems: I build Model Context Protocol (MCP) servers for accounting and e-commerce platforms and deploy them with Docker through the Obot MCP gateway.",
+      "I work as an AI/ML Developer at Satva Solutions in Ahmedabad. My main job is to connect AI agents to business systems: I build Model Context Protocol (MCP) servers for accounting and e-commerce platforms and deploy them with Docker through the Obot MCP gateway.",
       "I also build retrieval systems. My project DocuMind uses hybrid search (vectors + BM25), a cross-encoder reranker and query rewriting, and can answer with Anthropic, OpenAI, Gemini or a local Ollama model.",
       "I like work close to the customer: understand the real problem, build the integration, and make sure it runs reliably."
     ]
   },
   experience: [
     {
-      title: "AI/ML Engineer Intern",
+      title: "AI/ML Developer",
       company: "Satva Solutions",
       period: "Jan 2026 – Present",
       location: "Ahmedabad, Gujarat",
