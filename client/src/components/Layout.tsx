@@ -12,7 +12,7 @@ interface LayoutProps {
 const navItems = [
   { to: "/about", label: "About" },
   { to: "/skills", label: "Skills" },
-  { to: "/projects", label: "Project" },
+  { to: "/projects", label: "Projects" },
   { to: "/contact", label: "Contact" }
 ];
 
@@ -68,10 +68,7 @@ export function Layout({ data, menuOpen, onToggleMenu, onCloseMenu }: LayoutProp
         <div className="row s-footer__content">
           <div className="column xl-6 lg-6 md-12 s-footer__block s-footer__about">
             <h3>About Prafulla</h3>
-            <p>
-              {profile.summary} I am actively building my skills in web development, machine learning, and modern AI
-              systems while creating practical full-stack applications.
-            </p>
+            <p>{profile.summary}</p>
           </div>
 
           <div className="column xl-3 lg-6 md-12 s-footer__block s-footer__site-links">
@@ -79,31 +76,19 @@ export function Layout({ data, menuOpen, onToggleMenu, onCloseMenu }: LayoutProp
             <ul className="link-list">
               <li><Link to="/">Home</Link></li>
               <li><Link to="/skills">Skills</Link></li>
-              <li><Link to="/projects">project</Link></li>
+              <li><Link to="/projects">Projects</Link></li>
               <li><Link to="/about">About</Link></li>
               <li><Link to="/contact">Contact</Link></li>
             </ul>
           </div>
 
           <div className="column xl-3 lg-6 md-12 tab-12 s-footer__block s-footer__newsletter">
-            <h3>Newsletter</h3>
+            <h3>Contact</h3>
             <p>
-              Stay updated with the latest news on web development, machine learning, AI/ML, and project updates.
-              Subscribe to stay connected and informed about my journey and the tech world.
+              <a href={`mailto:${profile.email}`}>{profile.email}</a>
+              <br />
+              {profile.location}
             </p>
-
-            <div className="subscribe-form">
-              <form className="mc-form">
-                <input
-                  type="email"
-                  className="u-fullwidth text-center"
-                  placeholder="Your Email Address"
-                  readOnly
-                />
-                <input type="submit" value="Subscribe" className="btn btn--primary btn--small u-fullwidth" />
-                <div className="mc-status"></div>
-              </form>
-            </div>
           </div>
         </div>
 
@@ -113,7 +98,7 @@ export function Layout({ data, menuOpen, onToggleMenu, onCloseMenu }: LayoutProp
           </div>
           <div className="column xl-6 lg-12">
             <p className="ss-copyright">
-              <span>© Copyright Prafulla 2026</span>
+              <span>© {new Date().getFullYear()} Prafulla Purohit</span>
             </p>
           </div>
 

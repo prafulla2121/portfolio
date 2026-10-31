@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
-import { usePortfolioData } from "./hooks/usePortfolioData";
+import { portfolioData as data } from "./data";
 import { AboutPage } from "./pages/AboutPage";
 import { ContactPage } from "./pages/ContactPage";
 import { HomePage } from "./pages/HomePage";
@@ -9,7 +9,6 @@ import { ProjectsPage } from "./pages/ProjectsPage";
 import { SkillsPage } from "./pages/SkillsPage";
 
 export default function App() {
-  const { data, loading, error } = usePortfolioData();
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -19,19 +18,6 @@ export default function App() {
     document.body.classList.add("ss-show");
     document.body.classList.toggle("menu-is-open", menuOpen);
   }, [menuOpen]);
-
-  if (loading) {
-    return null;
-  }
-
-  if (error || !data) {
-    return (
-      <main style={{ padding: "4rem 2rem" }}>
-        <h1>Unable to load portfolio</h1>
-        <p>{error ?? "Unknown error."}</p>
-      </main>
-    );
-  }
 
   return (
     <Routes>
