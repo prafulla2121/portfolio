@@ -25,7 +25,7 @@ export const portfolioData: PortfolioData = {
     {
       title: "AI/ML Developer",
       company: "Satva Solutions",
-      period: "Jan 2026 – Present",
+      period: "Jun 2026 – Present (Intern Jan – Jun 2026)",
       location: "Ahmedabad, Gujarat",
       points: [
         "Build MCP servers that give AI agents access to Xero, QuickBooks Online, Shopify and Linnworks APIs, including a 60-tool read-only Linnworks server.",
