@@ -21,8 +21,14 @@ export const imageSchema = z
   .max(500)
   .refine((v) => v === "" || /^\/[^/]/.test(v) || /^https:\/\//i.test(v), "must be a site path or an https URL");
 
-export const ANIMATIONS = ["none", "fade", "slide", "scale", "stagger"] as const;
+export const ANIMATIONS = ["none", "fade", "slide", "scale", "stagger", "blur"] as const;
 export const LOADERS = ["none", "fade", "spinner"] as const;
+// React Bits effects (client/src/components/reactbits). "none" switches each one off.
+export const HERO_TEXT = ["none", "blur"] as const;
+export const ACCENTS = ["none", "shiny", "gradient"] as const;
+export const CARD_FX = ["none", "lift", "spotlight"] as const;
+export const BUTTON_FX = ["none", "magnet", "spark"] as const;
+export const BACKGROUNDS = ["none", "dots"] as const;
 export const BODY_FONTS = ["Roboto Flex", "Inter", "DM Sans", "Poppins", "Lato"] as const;
 export const DISPLAY_FONTS = ["DM Serif Display", "Playfair Display", "Lora", "Merriweather", "Fraunces"] as const;
 const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/, "a colour like #EA9010");
@@ -125,8 +131,16 @@ export const settingsSchema = z.object({
     })
     .default({ color1: "#EA9010", color2: "#343D35", color3: "#FEF5E4", bodyFont: "Roboto Flex", displayFont: "DM Serif Display" }),
   animations: z
-    .object({ enabled: z.boolean().default(true), loader: z.enum(LOADERS).default("fade") })
-    .default({ enabled: true, loader: "fade" })
+    .object({
+      enabled: z.boolean().default(true),
+      loader: z.enum(LOADERS).default("fade"),
+      heroText: z.enum(HERO_TEXT).default("blur"),
+      accent: z.enum(ACCENTS).default("shiny"),
+      card: z.enum(CARD_FX).default("spotlight"),
+      button: z.enum(BUTTON_FX).default("magnet"),
+      background: z.enum(BACKGROUNDS).default("dots")
+    })
+    .default({ enabled: true, loader: "fade", heroText: "blur", accent: "shiny", card: "spotlight", button: "magnet", background: "dots" })
 });
 
 export const contentSchema = z

@@ -1,8 +1,8 @@
 import type { MotionProps, Variants } from "motion/react";
 import type { Animation } from "../../../shared/content";
 
-// Only opacity and transform are animated. MotionConfig (App.tsx) drops the transforms under reduced motion,
-// or always when the admin switches animations off.
+// Only opacity, transform and (blur) filter are animated. PageView passes "none" under reduced motion
+// or when the admin switches animations off, so nothing moves then.
 const ease = [0.16, 1, 0.3, 1] as const;
 const viewport = { once: true, margin: "0px 0px -10% 0px" } as const;
 
@@ -10,13 +10,16 @@ const from = {
   fade: { opacity: 0 },
   slide: { opacity: 0, y: 40 },
   scale: { opacity: 0, scale: 0.95 },
-  stagger: { opacity: 0, y: 24 }
+  stagger: { opacity: 0, y: 24 },
+  // blur-in reveal, after React Bits FadeContent (that one needs GSAP; motion is already here)
+  blur: { opacity: 0, filter: "blur(10px)" }
 };
 const to = {
   fade: { opacity: 1 },
   slide: { opacity: 1, y: 0 },
   scale: { opacity: 1, scale: 1 },
-  stagger: { opacity: 1, y: 0 }
+  stagger: { opacity: 1, y: 0 },
+  blur: { opacity: 1, filter: "blur(0px)" }
 };
 
 export interface SectionMotion {

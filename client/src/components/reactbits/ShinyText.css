@@ -1,0 +1,23 @@
+/* React Bits (https://reactbits.dev, github.com/DavidHDev/react-bits @ 4dc7b5b), MIT + Commons Clause, (c) David Haz.
+   Vendored for this site only; see ./LICENSE.md. Do not sell or redistribute the component on its own. */
+.shiny-text {
+  position: relative;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.shiny-text__glow {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: blur(0.14em);
+  pointer-events: none;
+  user-select: none;
+}

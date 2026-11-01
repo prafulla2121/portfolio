@@ -1,8 +1,9 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { MotionConfig } from "motion/react";
+import { MotionConfig, useReducedMotion } from "motion/react";
 import type { Content } from "../../shared/content";
 import { seed } from "../../shared/seed";
+import { FxProvider, resolveFx } from "./components/Fx";
 import { Layout } from "./components/Layout";
 import { PageView } from "./components/PageView";
 import { applySettings } from "./theme";
@@ -62,10 +63,14 @@ export default function App() {
   }, [menuOpen]);
 
   const pages = doc.pages.filter((p) => p.visible || p.slug === "");
+  const reduce = useReducedMotion() ?? false;
+  const { animations, theme } = doc.settings;
+  const fx = useMemo(() => resolveFx(animations, theme, reduce), [animations, theme, reduce]);
 
   return (
     // "user": transforms switch off when the OS asks for reduced motion; "always" when the admin turns animations off
     <MotionConfig reducedMotion={doc.settings.animations.enabled ? "user" : "always"}>
+      <FxProvider value={fx}>
       <Routes>
         <Route
           path="/"
@@ -97,6 +102,7 @@ export default function App() {
           }
         />
       </Routes>
+      </FxProvider>
     </MotionConfig>
   );
 }

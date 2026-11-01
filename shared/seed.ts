@@ -31,7 +31,7 @@ export const seed: Content = {
       { id: "instagram", label: "Instagram", url: "https://www.instagram.com/your_prafull/profilecard/?igsh=dXNibGlpZXB3dDZ6", visible: true }
     ],
     theme: { color1: "#EA9010", color2: "#343D35", color3: "#FEF5E4", bodyFont: "Roboto Flex", displayFont: "DM Serif Display" },
-    animations: { enabled: true, loader: "fade" }
+    animations: { enabled: true, loader: "fade", heroText: "blur", accent: "shiny", card: "spotlight", button: "magnet", background: "dots" }
   },
   pages: [
     {

@@ -159,3 +159,26 @@ img {
     transform: rotate(360deg);
   }
 }
+
+/* --- React Bits effects (components/Fx.tsx); layout stays the template's --- */
+.hero-bg {
+  position: absolute !important;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* SpotlightCard draws only the glow: no surface, border or rounding of its own.
+   6px of padding (taken back by the margin) keeps link focus rings inside its clip. */
+.spotlight-card.card-fx {
+  padding: 0.6rem;
+  margin: -0.6rem;
+  border-radius: 0;
+}
+
+@media screen and (max-width: 1000px) {
+  .s-cta__content .btn-fx {
+    display: block !important;
+    width: 100% !important;
+  }
+}

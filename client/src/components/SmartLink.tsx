@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { ButtonFx } from "./Fx";
 
 interface SmartLinkProps {
   href: string;
@@ -34,11 +35,13 @@ export function SmartLink({ href, className, children, onClick }: SmartLinkProps
   return <span className={className}>{children}</span>;
 }
 
-/** A template button; renders nothing unless both label and link are set. */
+/** A template button (with the CMS button effect); renders nothing unless both label and link are set. */
 export function Button({ label, href, className }: { label: string; href: string; className: string }) {
   return label && href ? (
-    <SmartLink href={href} className={className}>
-      {label}
-    </SmartLink>
+    <ButtonFx full={className.includes("u-fullwidth")}>
+      <SmartLink href={href} className={className}>
+        {label}
+      </SmartLink>
+    </ButtonFx>
   ) : null;
 }

@@ -176,3 +176,24 @@ test("admin returns 503 when env vars are missing", async () => {
   const deps = { ...memoryDeps(), env: {} };
   assert.equal((await handle(req("/api/admin/login", "POST", { password: "x" }), deps)).status, 503);
 });
+
+test("content saved before the React Bits presets still parses and gets the effect defaults", () => {
+  const old = structuredClone(seed) as unknown as { settings: { animations: Record<string, unknown> } };
+  old.settings.animations = { enabled: false, loader: "spinner" };
+  const r = contentSchema.safeParse(old);
+  assert.ok(r.success);
+  assert.deepEqual(r.data.settings.animations, { enabled: false, loader: "spinner", heroText: "blur", accent: "shiny", card: "spotlight", button: "magnet", background: "dots" });
+  const noAnim = structuredClone(seed) as unknown as { settings: Record<string, unknown> };
+  delete noAnim.settings.animations;
+  assert.equal(contentSchema.parse(noAnim).settings.animations.card, "spotlight");
+});
+
+test("every effect preset can be switched off, and unknown presets are refused", () => {
+  const doc = structuredClone(seed);
+  doc.settings.animations = { ...doc.settings.animations, heroText: "none", accent: "gradient", card: "none", button: "spark", background: "none" };
+  doc.pages[0].sections[0].animation = "blur";
+  assert.ok(contentSchema.safeParse(doc).success);
+  const bad = structuredClone(seed) as unknown as { settings: { animations: Record<string, unknown> } };
+  bad.settings.animations.background = "three-js-galaxy";
+  assert.equal(contentSchema.safeParse(bad).success, false);
+});

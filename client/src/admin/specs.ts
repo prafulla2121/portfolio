@@ -1,8 +1,13 @@
 // The field-spec tables: one small list per section / item type. Edit here to change what the admin shows.
 import {
+  ACCENTS,
   ANIMATIONS,
+  BACKGROUNDS,
   BODY_FONTS,
+  BUTTON_FX,
+  CARD_FX,
   DISPLAY_FONTS,
+  HERO_TEXT,
   LOADERS,
   experienceItem,
   navItem,
@@ -169,4 +174,12 @@ export const THEME: Spec[] = [
   { k: "displayFont", label: "Heading font", kind: "select", options: DISPLAY_FONTS }
 ];
 
-export const ANIM: Spec[] = [check("enabled", "Animations on"), { k: "loader", label: "Page loader", kind: "select", options: LOADERS }];
+export const ANIM: Spec[] = [
+  check("enabled", "Animations on (off also switches off every effect below)"),
+  { k: "loader", label: "Page loader", kind: "select", options: LOADERS },
+  { k: "heroText", label: "Hero title effect", kind: "select", options: HERO_TEXT, hint: "blur = words blur in (React Bits BlurText)" },
+  { k: "accent", label: "Hero small-text accent", kind: "select", options: ACCENTS, hint: "React Bits ShinyText or GradientText" },
+  { k: "card", label: "Project card effect", kind: "select", options: CARD_FX, hint: "spotlight = glow follows the pointer (React Bits SpotlightCard)" },
+  { k: "button", label: "Button effect", kind: "select", options: BUTTON_FX, hint: "React Bits Magnet or ClickSpark" },
+  { k: "background", label: "Hero background", kind: "select", options: BACKGROUNDS, hint: "dots = interactive dot grid (React Bits DotGrid, loaded only when on)" }
+];

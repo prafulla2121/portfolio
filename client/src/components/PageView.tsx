@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import { motion } from "motion/react";
 import type { Content, Page, ProjectItem, Section, TextItem } from "../../../shared/content";
 import { ContactForm } from "./ContactForm";
-import { cardHover, sectionMotion, type SectionMotion } from "./Motion";
+import { Accent, CardFx, HeroBackground, HeroWords, useFx } from "./Fx";
+import { sectionMotion, type SectionMotion } from "./Motion";
 import { Button, SmartLink } from "./SmartLink";
 import { SocialIcons } from "./SocialIcons";
 
@@ -24,7 +25,7 @@ const isStandalone = (s: Section) =>
 
 export function PageView({ page, doc }: { page: Page; doc: Content }) {
   const sections = visible(page.sections);
-  const animate = doc.settings.animations.enabled;
+  const animate = useFx().on; // off when the admin switches animations off or the OS asks for reduced motion
   const blocks: ReactNode[] = [];
   let inner: ReactNode[] = [];
   const flush = () => {
@@ -85,20 +86,31 @@ function SectionView({ s, m, doc, nextId }: { s: Section; m: SectionMotion; doc:
 }
 
 function Hero({ s, m, doc, nextId }: Props<"hero"> & { nextId?: string }) {
+  const blurTitle = useFx().heroText === "blur";
+  const parts = s.title.split("|").map((part) => part.trim());
   return (
     <section id={s.id} className="s-intro">
+      <HeroBackground />
       <div className="row s-intro__content width-sixteen-col">
         <div className="column lg-12 s-intro__content-inner grid-block">
           <motion.div className="s-intro__content-text" {...m.list}>
-            {s.pretitle ? <motion.div className="s-intro__content-pretitle text-pretitle" {...m.item}>{s.pretitle}</motion.div> : null}
-            <motion.h1 className="s-intro__content-title" {...m.item}>
-              {s.title.split("|").map((part, i) => (
-                <span key={i}>
-                  {i > 0 ? <br /> : null}
-                  {part.trim()}
-                </span>
-              ))}
-            </motion.h1>
+            {s.pretitle ? <motion.div className="s-intro__content-pretitle text-pretitle" {...m.item}><Accent>{s.pretitle}</Accent></motion.div> : null}
+            {blurTitle ? (
+              <h1 className="s-intro__content-title">
+                {parts.map((part, i) => (
+                  <HeroWords key={i} text={part} />
+                ))}
+              </h1>
+            ) : (
+              <motion.h1 className="s-intro__content-title" {...m.item}>
+                {parts.map((part, i) => (
+                  <span key={i}>
+                    {i > 0 ? <br /> : null}
+                    {part}
+                  </span>
+                ))}
+              </motion.h1>
+            )}
             {s.lead ? <motion.p className="s-intro__content-lead" {...m.item}>{s.lead}</motion.p> : null}
           </motion.div>
 
@@ -270,7 +282,7 @@ function Projects({ s, m, doc }: Props<"projects">) {
     return (
       <Split s={s} m={m}>
         {items.map((p) => (
-          <motion.div className="grid-list-items__item list-items__item" key={p.id} {...m.item} {...cardHover}>
+          <CardFx className="grid-list-items__item list-items__item" key={p.id} item={m.item}>
             <Thumb src={p.image} alt={p.title} />
             <div className="grid-list-items__title list-items__item-header">
               <h3 className="list-items__item-title">{linkOr(p.repoUrl || p.liveUrl, p.title)}</h3>
@@ -279,7 +291,7 @@ function Projects({ s, m, doc }: Props<"projects">) {
               <p>{p.description}</p>
               <Tags tags={p.tech} />
             </div>
-          </motion.div>
+          </CardFx>
         ))}
       </Split>
     );
@@ -292,7 +304,7 @@ function Projects({ s, m, doc }: Props<"projects">) {
         <div className="column xl-12 grid-block">
           <motion.div className="grid-full grid-list-items" {...m.list}>
             {items.map((p) => (
-              <motion.div className="grid-list-items__item blog-card" key={p.id} {...m.item} {...cardHover}>
+              <CardFx className="grid-list-items__item blog-card" key={p.id} item={m.item}>
                 <Thumb src={p.image} alt={p.title} />
                 <div className="blog-card__header">
                   {p.category ? <div className="blog-card__cat-links">{linkOr(p.repoUrl, p.category)}</div> : null}
@@ -303,7 +315,7 @@ function Projects({ s, m, doc }: Props<"projects">) {
                   <Tags tags={p.tech} />
                   {mainLink(p) ? <SmartLink href={mainLink(p)}>{mainLabel(p)} →</SmartLink> : null}
                 </div>
-              </motion.div>
+              </CardFx>
             ))}
           </motion.div>
         </div>
