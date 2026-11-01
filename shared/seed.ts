@@ -47,7 +47,7 @@ export const seed: Content = {
           visible: true,
           animation: "slide",
           pretitle: "Hello, I'm Prafulla",
-          title: "Forward Deployed / Applied AI Engineer",
+          title: "Forward Deployed /|Applied AI Engineer",
           lead: "I build AI that works inside real businesses, not only in demos: MCP servers, RAG pipelines and AI agents.",
           image: "/images/face-swap7.png",
           scrollLabel: "Scroll for more"
@@ -113,9 +113,10 @@ export const seed: Content = {
           layout: "chapters",
           visible: true,
           animation: "fade",
-          pretitle: "",
+          pretitle: "A Glimpse into Who I Am",
           title: "How I Got Here",
           lead: "",
+          image: "/about-images/image (1).png",
           items: [
             { id: "tenth", visible: true, title: "10th", text: "My school years were not easy. My family faced money problems and a lot of pressure. I knew education was my way forward, stayed focused, and finished 10th grade at Swami Vivekanand School, Maharashtra, with 89.40%.", link: "", image: "", tags: [] },
             { id: "twelfth", visible: true, title: "12th (PCMB)", text: "I chose Science with Maths (PCMB). I balanced studies with family responsibilities and scored 89%. This is where I learned perseverance, discipline and hard work.", link: "", image: "", tags: [] },
@@ -181,6 +182,7 @@ export const seed: Content = {
           pretitle: "",
           title: "Education",
           lead: "",
+          image: "",
           items: [
             { id: "btech", visible: true, title: "B.Tech in Information Technology, Marwadi University", text: "2022 – 2026. CGPA 8.38 / 10.", link: "", image: "", tags: [] },
             { id: "hsc", visible: true, title: "Higher Secondary (Class 12), R.C. Patel, Shirpur", text: "2021. 89%.", link: "", image: "", tags: [] },
@@ -196,6 +198,7 @@ export const seed: Content = {
           pretitle: "",
           title: "Certifications",
           lead: "",
+          image: "",
           items: [
             { id: "python-ds", visible: true, title: "Python for Data Science", text: "", link: "", image: "", tags: [] },
             { id: "oracle", visible: true, title: "Oracle: Java Programming, Database Management Systems", text: "", link: "", image: "", tags: [] },
@@ -213,6 +216,7 @@ export const seed: Content = {
           pretitle: "",
           title: "Achievements & Activities",
           lead: "",
+          image: "",
           items: [
             { id: "hackathons", visible: true, title: "Hackathons", text: "Hack The Mountain 2024; Intellify Hackathon 2023 (Marwadi University).", link: "", image: "", tags: [] },
             { id: "clubs", visible: true, title: "Clubs and events", text: "Member, Robotics & IoT Club; attendee, TEDx Marwadi University 2024.", link: "", image: "", tags: [] },
@@ -229,6 +233,7 @@ export const seed: Content = {
           pretitle: "",
           title: "My Values & Beliefs",
           lead: "",
+          image: "",
           items: [
             { id: "innovation", visible: true, title: "Innovation", text: "Creative problem-solving that makes a real difference: start from the real problem and the real data.", link: "", image: "", tags: [] },
             { id: "resilience", visible: true, title: "Resilience", text: "Life has thrown many challenges my way, from financial difficulties to academic stress. I have learned to bounce back stronger each time.", link: "", image: "", tags: [] },
@@ -317,6 +322,7 @@ export const seed: Content = {
           pretitle: "",
           title: "Have an AI integration to build? Let's talk.",
           text: "I help teams connect AI agents to their real systems: MCP servers, RAG over company documents, and agent workflows. Send a message below or email me.",
+          image: "/contact-images/contact-1200.jpg",
           showForm: true,
           showEmail: true,
           showSocial: true

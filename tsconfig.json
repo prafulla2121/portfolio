@@ -26,6 +26,7 @@
   },
   "include": [
     "client/src",
-    "netlify"
+    "netlify",
+    "shared"
   ]
 }

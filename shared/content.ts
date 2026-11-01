@@ -83,9 +83,9 @@ export const sectionSchema = z.discriminatedUnion("type", [
   z.object({ ...base, type: z.literal("projects"), limit: z.number().int().min(0).max(100).default(0), buttonLabel: line(60).default(""), buttonLink: linkSchema.default(""), items: z.array(projectItem).max(60).default([]) }),
   z.object({ ...base, type: z.literal("skills"), lead: line(600).default(""), buttonLabel: line(60).default(""), buttonLink: linkSchema.default(""), groups: z.array(skillGroup).max(30).default([]) }),
   // education, certifications, achievements, values, story chapters and any custom list
-  z.object({ ...base, type: z.literal("list"), layout: z.enum(["cards", "bullets", "chapters"]).default("cards"), lead: line(600).default(""), items: z.array(textItem).max(60).default([]) }),
+  z.object({ ...base, type: z.literal("list"), layout: z.enum(["cards", "bullets", "chapters"]).default("cards"), lead: line(600).default(""), image: imageSchema.default(""), items: z.array(textItem).max(60).default([]) }),
   z.object({ ...base, type: z.literal("text"), body: line(8000).default(""), image: imageSchema.default("") }),
-  z.object({ ...base, type: z.literal("contact"), text: line(1500).default(""), showForm: z.boolean().default(true), showEmail: z.boolean().default(true), showSocial: z.boolean().default(true) }),
+  z.object({ ...base, type: z.literal("contact"), text: line(1500).default(""), image: imageSchema.default(""), showForm: z.boolean().default(true), showEmail: z.boolean().default(true), showSocial: z.boolean().default(true) }),
   z.object({ ...base, type: z.literal("cta"), lead: line(600).default(""), buttonLabel: line(60).default(""), buttonLink: linkSchema.default("") })
 ]);
 

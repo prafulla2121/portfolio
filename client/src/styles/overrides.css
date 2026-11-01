@@ -94,3 +94,68 @@ img {
     padding-right: 16px;
   }
 }
+
+/* --- CMS renderer additions --- */
+:focus-visible {
+  outline: 2px solid var(--color-1);
+  outline-offset: 3px;
+}
+
+/* long emails / URLs must not push the page sideways at 375px */
+.s-footer a,
+.contact-block a,
+.contact-form__status a {
+  overflow-wrap: anywhere;
+}
+
+.experience-item__promoted {
+  margin: 0 0 var(--vspace-0_5);
+  color: var(--color-1-dark);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.card-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  margin-bottom: var(--vspace-0_75);
+}
+
+.contact-form__status:empty {
+  display: none;
+}
+
+/* loader overlay (fades out via motion; under reduced motion it is removed at once) */
+.site-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  background-color: var(--color-2-dark);
+}
+
+.site-loader__spinner {
+  width: 4rem;
+  height: 4rem;
+  border: 3px solid var(--color-2-lightest);
+  border-top-color: var(--color-1);
+  border-radius: 50%;
+}
+
+/* the global "animation: none" above is for the template's own effects; the spinner is ours */
+@media (prefers-reduced-motion: no-preference) {
+  .site-loader .site-loader__spinner {
+    animation: site-loader-spin 0.8s linear infinite !important;
+  }
+}
+
+@keyframes site-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

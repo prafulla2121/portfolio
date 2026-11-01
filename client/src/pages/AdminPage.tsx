@@ -1,40 +1,13 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
-import type { ExperienceItem, ProjectItem } from "../types/portfolio";
+import { contentSchema, type Content } from "../../../shared/content";
+import { api, ApiError, errText, type Loaded } from "../admin/api";
+import { pathText, setIn, type SetFn } from "../admin/fields";
+import { BackupTab, ImagesTab, MessagesTab, NavTab, PagesTab, SettingsTab } from "../admin/tabs";
+import "../admin/admin.css";
 
-type Tab = "projects" | "experience" | "messages";
-type Message = { id: string; name: string; email: string; message: string; receivedAt: string };
-type Field = { name: string; label: string; list?: boolean; long?: boolean; optional?: boolean };
-
-const FIELDS: Record<"projects" | "experience", Field[]> = {
-  projects: [
-    { name: "title", label: "Title" },
-    { name: "category", label: "Category" },
-    { name: "description", label: "Description", long: true },
-    { name: "tech", label: "Tech stack (one per line)", list: true },
-    { name: "repoUrl", label: "Repo URL (https)" },
-    { name: "liveUrl", label: "Live URL (optional, https)", optional: true }
-  ],
-  experience: [
-    { name: "title", label: "Role" },
-    { name: "company", label: "Company" },
-    { name: "period", label: "Period, e.g. Jun 2026 – Present" },
-    { name: "location", label: "Location" },
-    { name: "points", label: "Highlights (one per line)", list: true }
-  ]
-};
-
-async function api<T>(path: string, method = "GET", body?: unknown): Promise<T> {
-  const res = await fetch(`/api/admin/${path}`, {
-    method,
-    credentials: "same-origin",
-    headers: body === undefined && method === "GET" ? {} : { "content-type": "application/json" },
-    body: body === undefined ? (method === "GET" ? undefined : "{}") : JSON.stringify(body)
-  });
-  const out = (await res.json().catch(() => ({}))) as T & { error?: string; fields?: string[] };
-  if (!res.ok) throw new Error(out.fields?.length ? `${out.error}: ${out.fields.join(", ")}` : out.error ?? `Error ${res.status}`);
-  return out;
-}
+const TABS = ["Settings", "Navigation", "Pages", "Images", "Messages", "Backup"] as const;
+type Tab = (typeof TABS)[number];
 
 function Login({ onDone }: { onDone: () => void }) {
   const [error, setError] = useState("");
@@ -45,168 +18,127 @@ function Login({ onDone }: { onDone: () => void }) {
       await api("login", "POST", { password: new FormData(e.currentTarget).get("password") });
       onDone();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Sign-in failed");
+      const s = err instanceof ApiError ? err.status : 0;
+      setError(s === 401 ? "Wrong password." : s === 429 ? "Too many tries. Wait a few minutes, then try again." : errText(err));
     }
   }
   return (
-    <form className="form" onSubmit={submit}>
+    <form className="a-login" onSubmit={submit}>
       <div className="field">
         <label htmlFor="a-pass">Admin password</label>
         <input id="a-pass" name="password" type="password" required autoComplete="current-password" />
       </div>
-      <div>
-        <button className="btn btn--primary" type="submit">
-          Sign in
-        </button>
-      </div>
-      <div aria-live="polite">{error && <p className="notice is-error">{error}</p>}</div>
+      <button className="btn btn--primary" type="submit">
+        Sign in
+      </button>
+      <div aria-live="polite">{error && <p className="a-error">{error}</p>}</div>
     </form>
   );
 }
 
-type Item = (ProjectItem | ExperienceItem) & Record<string, unknown>;
+function Editor({ onSignOut }: { onSignOut: () => void }) {
+  const [saved, setSaved] = useState<Content | null>(null);
+  const [draft, setDraft] = useState<Content | null>(null);
+  const [rev, setRev] = useState(0); // bump to reset local form state after the draft is replaced from outside
+  const [tab, setTab] = useState<Tab>("Settings");
+  const [busy, setBusy] = useState(false);
+  const [status, setStatus] = useState("");
+  const [issues, setIssues] = useState<string[]>([]);
 
-function Editor({ tab, item, onSaved, onCancel }: { tab: "projects" | "experience"; item: Item | null; onSaved: () => void; onCancel: () => void }) {
-  const [error, setError] = useState("");
-  async function submit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const body: Record<string, unknown> = {};
-    for (const f of FIELDS[tab]) {
-      const v = String(fd.get(f.name) ?? "").trim();
-      if (f.list) body[f.name] = v.split("\n").map((s) => s.trim()).filter(Boolean);
-      else if (!(f.optional && v === "")) body[f.name] = v;
-    }
-    try {
-      await (item ? api(`${tab}/${encodeURIComponent(item.id)}`, "PUT", body) : api(tab, "POST", body));
-      onSaved();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Save failed");
-    }
-  }
-  return (
-    <form className="form" onSubmit={submit}>
-      <h2>{item ? `Edit ${String(item.title)}` : `Add to ${tab}`}</h2>
-      {FIELDS[tab].map((f) => {
-        const raw = item?.[f.name];
-        const value = Array.isArray(raw) ? raw.join("\n") : String(raw ?? "");
-        const id = `f-${f.name}`;
-        return (
-          <div className="field" key={f.name}>
-            <label htmlFor={id}>{f.label}</label>
-            {f.list || f.long ? (
-              <textarea id={id} name={f.name} defaultValue={value} required={!f.optional} />
-            ) : (
-              <input id={id} type="text" name={f.name} defaultValue={value} required={!f.optional} />
-            )}
-          </div>
-        );
-      })}
-      <div className="actions">
-        <button className="btn btn--primary" type="submit">
-          Save
-        </button>
-        <button className="btn btn--small btn--stroke" type="button" onClick={onCancel}>
-          Cancel
-        </button>
-      </div>
-      <div aria-live="polite">{error && <p className="notice is-error">{error}</p>}</div>
-    </form>
-  );
-}
-
-function Dashboard({ onSignOut }: { onSignOut: () => void }) {
-  const [tab, setTab] = useState<Tab>("projects");
-  const [items, setItems] = useState<Item[]>([]);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [editing, setEditing] = useState<Item | "new" | null>(null);
-  const [error, setError] = useState("");
-
-  const load = async () => {
-    setError("");
-    try {
-      if (tab === "messages") setMessages((await api<{ items: Message[] }>("messages")).items);
-      else setItems((await api<{ items: Item[] }>(tab)).items);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load");
-    }
-  };
+  const replace = useCallback((c: Content, keepDraft = false) => {
+    if (!keepDraft) setSaved(c);
+    setDraft(c);
+    setRev((r) => r + 1);
+    setIssues([]);
+  }, []);
 
   useEffect(() => {
-    setEditing(null);
-    void load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tab]);
+    api<Loaded>("content")
+      .then((r) => replace(r.content))
+      .catch((e) => setStatus(`Could not load content: ${errText(e)}`));
+  }, [replace]);
 
-  async function remove(item: Item) {
-    if (!window.confirm(`Delete "${String(item.title)}"? This cannot be undone.`)) return;
+  const dirty = useMemo(() => JSON.stringify(draft) !== JSON.stringify(saved), [draft, saved]);
+  useEffect(() => {
+    if (!dirty) return;
+    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [dirty]);
+
+  const set: SetFn = useCallback((path, value) => {
+    setDraft((d) => (d ? setIn(d, path, value) : d));
+    setStatus("");
+  }, []);
+
+  async function save() {
+    if (!draft || !saved) return;
+    const r = contentSchema.safeParse(draft);
+    if (!r.success) {
+      setStatus("Not saved. Please fix these first:");
+      return setIssues(r.error.issues.slice(0, 6).map((i) => `${pathText(draft, i.path)}: ${i.message}`));
+    }
+    setBusy(true);
+    setIssues([]);
     try {
-      await api(`${tab}/${encodeURIComponent(item.id)}`, "DELETE");
-      await load();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Delete failed");
+      const out = await api<Loaded>("content", "PUT", { content: r.data, baseVersion: saved.version });
+      setSaved(out.content);
+      setDraft(out.content);
+      setStatus("Saved. The site is updated.");
+    } catch (e) {
+      const err = e instanceof ApiError ? e : null;
+      if (err?.status === 409) setStatus("Not saved: someone saved a newer version in the meantime. Reload the page to get it (your changes here will be lost).");
+      else setStatus(`Not saved: ${errText(e)}`);
+      if (err?.fields.length) setIssues(err.fields);
+    } finally {
+      setBusy(false);
     }
   }
 
+  if (!draft || !saved) return <p role="status">{status || "Loading content…"}</p>;
+  const b = "btn btn--small btn--stroke";
   return (
     <>
-      <div className="admin-bar" role="group" aria-label="Sections">
-        {(["projects", "experience", "messages"] as Tab[]).map((t) => (
-          <button key={t} type="button" className="btn btn--small btn--stroke" aria-pressed={tab === t} onClick={() => setTab(t)}>
-            {t[0].toUpperCase() + t.slice(1)}
-          </button>
-        ))}
-        <button type="button" className="btn btn--small btn--stroke" onClick={onSignOut}>
+      <div className="a-bar">
+        <button type="button" className="btn btn--small btn--primary" onClick={save} disabled={busy || !dirty}>
+          {busy ? "Saving…" : "Save"}
+        </button>
+        <button type="button" className={b} disabled={!dirty} onClick={() => window.confirm("Throw away all unsaved changes?") && replace(saved)}>
+          Discard changes
+        </button>
+        <span className="a-state">{dirty ? "Unsaved changes" : `All saved (v${saved.version})`}</span>
+        <a className={b} href="/" target="_blank" rel="noopener">
+          View site
+        </a>
+        <button type="button" className={b} onClick={() => (!dirty || window.confirm("You have unsaved changes. Sign out anyway?")) && onSignOut()}>
           Sign out
         </button>
       </div>
-      <div aria-live="polite">{error && <p className="notice is-error">{error}</p>}</div>
-
-      {tab === "messages" ? (
-        <ul className="admin-list">
-          {messages.length === 0 && <li>No messages yet. They appear here when someone uses the contact form.</li>}
-          {messages.map((m) => (
-            <li key={m.id} className="message">
-              <strong>{m.name}</strong> <a href={`mailto:${m.email}`}>{m.email}</a>{" "}
-              <span className="meta">{new Date(m.receivedAt).toLocaleString()}</span>
-              <p>{m.message}</p>
-            </li>
-          ))}
-        </ul>
-      ) : editing ? (
-        <Editor
-          tab={tab}
-          item={editing === "new" ? null : editing}
-          onCancel={() => setEditing(null)}
-          onSaved={() => {
-            setEditing(null);
-            void load();
-          }}
-        />
-      ) : (
-        <>
-          <ul className="admin-list">
-            {items.map((item) => (
-              <li key={item.id}>
-                <span>
-                  <strong>{String(item.title)}</strong> {"company" in item ? `at ${String(item.company)}` : ""}
-                </span>
-                <span className="admin-actions">
-                  <button type="button" className="btn btn--small btn--stroke" onClick={() => setEditing(item)}>
-                    Edit
-                  </button>
-                  <button type="button" className="btn btn--small btn--stroke" onClick={() => remove(item)}>
-                    Delete
-                  </button>
-                </span>
-              </li>
+      <div role="alert">
+        {status && <p className="a-msg">{status}</p>}
+        {issues.length > 0 && (
+          <ul className="a-errors">
+            {issues.map((x) => (
+              <li key={x}>{x}</li>
             ))}
           </ul>
-          <button type="button" className="btn btn--primary" onClick={() => setEditing("new")}>
-            Add {tab === "projects" ? "project" : "role"}
+        )}
+      </div>
+      <nav className="a-tabs" aria-label="Admin sections">
+        {TABS.map((t) => (
+          <button key={t} type="button" className={b} aria-pressed={tab === t} onClick={() => setTab(t)}>
+            {t}
           </button>
-        </>
-      )}
+        ))}
+      </nav>
+      <section className="a-panel" key={rev}>
+        {tab === "Settings" && <SettingsTab doc={draft} set={set} />}
+        {tab === "Navigation" && <NavTab doc={draft} set={set} />}
+        {tab === "Pages" && <PagesTab doc={draft} set={set} />}
+        {tab === "Images" && <ImagesTab />}
+        {tab === "Messages" && <MessagesTab />}
+        {tab === "Backup" && <BackupTab saved={saved} dirty={dirty} onImport={(c) => replace(c, true)} onReplace={(c) => replace(c)} />}
+      </section>
     </>
   );
 }
@@ -214,46 +146,40 @@ function Dashboard({ onSignOut }: { onSignOut: () => void }) {
 export default function AdminPage() {
   const [state, setState] = useState<"checking" | "out" | "in" | "off">("checking");
 
-  const check = () =>
+  useEffect(() => {
+    document.title = "Admin";
     fetch("/api/admin/session", { credentials: "same-origin" })
       .then(async (r) => {
         if (r.status === 503 || !r.headers.get("content-type")?.includes("json")) return setState("off");
         setState(((await r.json()) as { authenticated: boolean }).authenticated ? "in" : "out");
       })
       .catch(() => setState("off"));
-
-  useEffect(() => {
-    document.title = "Admin | Prafulla Purohit";
-    void check();
   }, []);
 
   return (
     <main id="main" className="s-content admin">
-      <div className="row width-narrower pagemain">
-      <div className="column xl-12">
-      <p>
-        <Link to="/">Back to site</Link>
-      </p>
-      <h1>Admin</h1>
-      <div>
-        {state === "checking" && <p>Checking session…</p>}
-        {state === "off" && (
-          <p className="notice is-error">
-            The admin API is not reachable or not configured. Set ADMIN_PASSWORD_HASH and SESSION_SECRET in Netlify, or run
-            it with netlify dev.
+      <div className="row">
+        <div className="column xl-12">
+          <p>
+            <Link to="/">Back to site</Link>
           </p>
-        )}
-        {state === "out" && <Login onDone={() => setState("in")} />}
-        {state === "in" && (
-          <Dashboard
-            onSignOut={async () => {
-              await api("logout", "POST").catch(() => undefined);
-              setState("out");
-            }}
-          />
-        )}
-      </div>
-      </div>
+          <h1>Admin</h1>
+          {state === "checking" && <p role="status">Checking session…</p>}
+          {state === "off" && (
+            <p className="a-error">
+              The admin is not set up yet. Set ADMIN_PASSWORD_HASH and SESSION_SECRET in Netlify (or run it with netlify dev), then reload.
+            </p>
+          )}
+          {state === "out" && <Login onDone={() => setState("in")} />}
+          {state === "in" && (
+            <Editor
+              onSignOut={async () => {
+                await api("logout", "POST").catch(() => undefined);
+                setState("out");
+              }}
+            />
+          )}
+        </div>
       </div>
     </main>
   );
