@@ -1,4 +1,6 @@
 import { useOutletContext } from "react-router-dom";
+import { motion } from "motion/react";
+import { staggerItem, staggerOnView } from "../components/Motion";
 import { CtaSection } from "../components/CtaSection";
 import type { PortfolioData } from "../types/portfolio";
 
@@ -32,9 +34,9 @@ export function SkillsPage() {
 
         <div className="row">
           <div className="column xl-12 grid-block">
-            <div className="grid-full grid-list-items list-items show-ctr">
+            <motion.div className="grid-full grid-list-items list-items show-ctr" {...staggerOnView}>
               {data.skillGroups.map((group) => (
-                <div className="grid-list-items__item list-items__item" key={group.title}>
+                <motion.div className="grid-list-items__item list-items__item" key={group.title} variants={staggerItem}>
                   <div className="list-items__item-header">
                     <h3 className="list-items__item-title">{group.title}</h3>
                   </div>
@@ -45,9 +47,9 @@ export function SkillsPage() {
                       ))}
                     </ul>
                   </div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>

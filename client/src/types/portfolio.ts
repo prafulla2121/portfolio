@@ -1,4 +1,5 @@
 export interface ExperienceItem {
+  id: string;
   title: string;
   company: string;
   period: string;
@@ -12,6 +13,7 @@ export interface SkillGroup {
 }
 
 export interface ProjectItem {
+  id: string;
   title: string;
   category: string;
   description: string;

@@ -1,5 +1,7 @@
 import { useOutletContext } from "react-router-dom";
+import { motion } from "motion/react";
 import { CtaSection } from "../components/CtaSection";
+import { cardHover, staggerItem, staggerOnView } from "../components/Motion";
 import type { PortfolioData } from "../types/portfolio";
 
 export function ProjectsPage() {
@@ -22,9 +24,9 @@ export function ProjectsPage() {
       <section className="s-pagecontent pagecontent">
         <div className="row">
           <div className="column xl-12 grid-block">
-            <div className="grid-full grid-list-items">
+            <motion.div className="grid-full grid-list-items" {...staggerOnView}>
               {projects.map((project) => (
-                <div className="grid-list-items__item blog-card" key={project.title}>
+                <motion.div className="grid-list-items__item blog-card" key={project.id} variants={staggerItem} {...cardHover}>
                   <div className="blog-card__header">
                     <div className="blog-card__cat-links">
                       <a href={project.repoUrl} target="_blank" rel="noreferrer">
@@ -48,9 +50,9 @@ export function ProjectsPage() {
                       {project.liveUrl ? "Live demo" : "View code on GitHub"} →
                     </a>
                   </div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </div>
 

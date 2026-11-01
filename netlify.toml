@@ -1,12 +1,44 @@
 [build]
   command = "npm run build"
   publish = "dist"
+  functions = "netlify/functions"
 
 [build.environment]
-  NODE_VERSION = "20"
+  # @netlify/blobs needs Node 22+; functions use the same version
+  NODE_VERSION = "22"
 
-# SPA fallback so /about, /projects etc. work on refresh
+[functions]
+  node_bundler = "esbuild"
+
+# /api/* is routed to netlify/functions/api.mts by its config.path, which wins over this rule.
+# SPA fallback so /about, /projects, /admin work on refresh.
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/admin"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+# `npx netlify-cli dev`: runs Vite and the functions together on http://localhost:8888
+[dev]
+  command = "npm run dev"
+  targetPort = 5173
+  port = 8888
+  framework = "#custom"

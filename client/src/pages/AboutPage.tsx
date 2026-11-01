@@ -1,5 +1,6 @@
 import { useOutletContext } from "react-router-dom";
 import { CtaSection } from "../components/CtaSection";
+import { Reveal } from "../components/Motion";
 import type { PortfolioData } from "../types/portfolio";
 
 export function AboutPage() {
@@ -41,7 +42,7 @@ export function AboutPage() {
           <div className="column xl-12">
             <h2 className="u-add-bottom">Experience</h2>
             {data.experience.map((job) => (
-              <div className="experience-item" key={job.company}>
+              <Reveal className="experience-item" key={job.id}>
                 <h3 className="experience-item__title">{job.title} · {job.company}</h3>
                 <p className="experience-item__meta">{job.period} · {job.location}</p>
                 <ul>
@@ -49,7 +50,7 @@ export function AboutPage() {
                     <li key={point}>{point}</li>
                   ))}
                 </ul>
-              </div>
+              </Reveal>
             ))}
 
             <h2 className="u-add-bottom">Education</h2>

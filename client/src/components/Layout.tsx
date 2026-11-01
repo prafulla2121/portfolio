@@ -1,4 +1,6 @@
-import { Link, Outlet } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useLocation, useOutlet } from "react-router-dom";
+import { AnimatePresence, motion } from "motion/react";
 import type { PortfolioData } from "../types/portfolio";
 import { SocialIcons } from "./SocialIcons";
 
@@ -18,6 +20,11 @@ const navItems = [
 
 export function Layout({ data, menuOpen, onToggleMenu, onCloseMenu }: LayoutProps) {
   const { profile } = data;
+  const { pathname } = useLocation();
+  const outlet = useOutlet(data);
+
+  // close the mobile menu after navigating
+  useEffect(() => onCloseMenu(), [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div id="page" className="s-pagewrap">
@@ -62,7 +69,18 @@ export function Layout({ data, menuOpen, onToggleMenu, onCloseMenu }: LayoutProp
         </div>
       </header>
 
-      <Outlet context={data} />
+      {/* Page transition: the old page fades out (short), the new one settles in. AnimatePresence keeps the old element while it exits. */}
+      <AnimatePresence mode="wait" initial={false} onExitComplete={() => window.scrollTo(0, 0)}>
+        <motion.div
+          key={pathname}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, transition: { duration: 0.15, ease: "easeIn" } }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {outlet}
+        </motion.div>
+      </AnimatePresence>
 
       <footer className="s-footer">
         <div className="row s-footer__content">
